@@ -24,7 +24,6 @@ const actions = {
   async login(context, data) {
     // todo： 调用真正的登录接口 login登录接口返回的是promise对象， 如果正确返回 会经过响应拦截器，处理拿到data
     const token = await login(data)
-    console.log(token)
     // 先虚假返回一个token
     context.commit('LOGIN', token)
   }
