@@ -23,17 +23,13 @@
           <el-form-item>
             <el-button style="width:350px" type="primary" @click="login">登录</el-button>
           </el-form-item>
-          <!-- 测试按钮 -->
-          <el-form-item>
-            <el-button @click="textAjax">测试按钮</el-button>
-          </el-form-item>
         </el-form>
       </el-card>
     </div>
   </div>
 </template>
 <script>
-import request from '@/utils/request'
+
 export default {
   name: 'Login',
   data() {
@@ -90,17 +86,6 @@ export default {
           // 登录之后服务器返回一个token，使用vuex进行管理
           // 调用vuex提供的action 使用了模块化暴露的方式
           this.$store.dispatch('user/login', this.loginForm)
-        }
-      })
-    },
-    textAjax() {
-      // 测试请求和响应拦截器
-      request({
-        url: '/sys/login',
-        method: 'post',
-        data: {
-          mobile: '13800000002',
-          password: 'hm#qd@23!11'
         }
       })
     }

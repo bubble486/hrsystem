@@ -1,24 +1,10 @@
 import request from '@/utils/request'
 
+// 封装请求接口 请求应该返回一个promise对象
 export function login(data) {
   return request({
-    url: '/vue-admin-template/user/login',
+    url: '/sys/login',
     method: 'post',
     data
-  })
-}
-
-export function getInfo(token) {
-  return request({
-    url: '/vue-admin-template/user/info',
-    method: 'get',
-    params: { token }
-  })
-}
-
-export function logout() {
-  return request({
-    url: '/vue-admin-template/user/logout',
-    method: 'post'
   })
 }
