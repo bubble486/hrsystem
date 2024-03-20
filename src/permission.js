@@ -11,7 +11,7 @@ import store from '@/store'
  */
 // 设置白名单 没有token也可以访问的页面
 const whiteList = ['/login', '/404']
-router.beforeEach((to, from, next) => {
+router.beforeEach(async(to, from, next) => {
   // 开启进度条
   nprogress.start()
   // 如果存在token跳转到主页面
@@ -23,6 +23,11 @@ router.beforeEach((to, from, next) => {
       // 手动关闭进度条 不会执行后置路由守卫
       nprogress.done()
     } else {
+      // 有token 判断是否获取过资料
+      if (!store.getters.userId) {
+        // 这个地方用await是为了后面的内容是请求成功之后才执行
+        await store.dispatch('user/getUserInfo')
+      }
       next()
     }
   } else {

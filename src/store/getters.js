@@ -5,6 +5,7 @@ const getters = {
   sidebar: state => state.app.sidebar,
   // 取user模块属性
   token: state => state.user.token,
+  userId: state => state.user.userInfo.userId,
   avatar: state => state.user.avatar,
   name: state => state.user.name
 }
