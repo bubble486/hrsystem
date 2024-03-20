@@ -35,9 +35,10 @@ export default {
   data() {
     return {
       loginForm: {
-        mobile: '',
-        password: '',
-        isAgree: false
+        // 判断是生产环境还是开发环境 来决定是否展示用户名和密码
+        mobile: process.env.NODE_ENV === 'development' ? '13800000002' : '',
+        password: process.env.NODE_ENV === 'production' ? '' : 'hm#qd@23!',
+        isAgree: process.env.NODE_ENV === 'development'
       },
       loginRules: {
         // 校验手机号 require是是否必填，message是提示消息，trigger是什么时候触发 blur 失去焦点触发
@@ -81,11 +82,13 @@ export default {
     login() {
       // 获得表单的实例对象this.$refs.form 对实例对象调用validate方法进行数据的整体校验
       // 该函数可以传递回调函数
-      this.$refs.form.validate((isOk) => {
+      this.$refs.form.validate(async(isOk) => {
         if (isOk) {
           // 登录之后服务器返回一个token，使用vuex进行管理
           // 调用vuex提供的action 使用了模块化暴露的方式
-          this.$store.dispatch('user/login', this.loginForm)
+          // vuex 的action返回的是一个promise 在成功之后进行页面的跳转
+          await this.$store.dispatch('user/login', this.loginForm)
+          this.$router.push('/')
         }
       })
     }
