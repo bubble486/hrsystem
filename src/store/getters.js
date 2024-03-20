@@ -6,7 +6,7 @@ const getters = {
   // 取user模块属性
   token: state => state.user.token,
   userId: state => state.user.userInfo.userId,
-  avatar: state => state.user.avatar,
-  name: state => state.user.name
+  avatar: state => state.user.userInfo.staffPhoto, // 头像
+  name: state => state.user.userInfo.username // 用户名
 }
 export default getters
