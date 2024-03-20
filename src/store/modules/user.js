@@ -14,9 +14,9 @@ const mutations = {
     // utils/auth.js包中已经写好了方法
     setToken(token)
   },
-  LOGOUT() {
-    removeToken()
+  LOGOUT(state) {
     state.token = null
+    removeToken()
   },
   SET_USER_INFO(state, userInfo) {
     state.userInfo = userInfo
@@ -35,6 +35,12 @@ const actions = {
     const userInfo = await getUserInfo()
     // 调用api中 封装的请求用户数据接口
     context.commit('SET_USER_INFO', userInfo)
+  },
+  logout(context) {
+    // 删除token信息
+    context.commit('LOGOUT')
+    // 删除userInfo信息 就是给用户信息赋值一个空对象
+    context.commit('SET_USER_INFO', {})
   }
 }
 

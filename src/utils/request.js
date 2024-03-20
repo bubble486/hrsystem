@@ -1,5 +1,6 @@
 import axios from 'axios'
 import store from '@/store'
+import router from '@/router'
 // 导入element-ui的方法
 import { Message } from 'element-ui'
 
@@ -34,7 +35,15 @@ service.interceptors.response.use((response) => {
     Message({ type: 'error', message })
     return Promise.reject(new Error(message))
   }
-}, (error) => {
+}, async(error) => {
+  if (error.response.status === 401) {
+    Message({ type: 'warning', message: 'token超时' })
+    // 如果响应状态码是401则说明是token失效
+    // 调用action 退出登录 dispatch 是promise
+    await store.dispatch('user/logout')
+    router.push('/login')
+    return Promise.reject(error)
+  }
   Message({ type: 'error', message: error.message })
   return Promise.reject(error)
 })
