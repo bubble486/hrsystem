@@ -11,7 +11,7 @@
           <!-- 节点结构 -->
           <el-row style="width:100%;height:40px" type="flex" justify="space-between" align="middle">
             <el-col>{{ data.name }}</el-col>
-            <el-col :span="4">
+            <el-col :span="6">
               <span class="tree-manager">{{ data.managerName }}</span>
               <el-dropdown>
                 <!-- 显示区内容 -->
@@ -35,6 +35,7 @@
 </template>
 <script>
 import { getDepartmentList } from '@/api/department'
+import { transListToTreeData } from '@/utils'
 export default {
   name: 'Department',
   data() {
@@ -54,7 +55,8 @@ export default {
   methods: {
     // 定义获取数据的接口 不在created上面加async 存疑？
     async getDepartmentList() {
-      this.depts = await getDepartmentList()
+      const list = await getDepartmentList()
+      this.depts = transListToTreeData(list, 0)
     }
   }
 }
@@ -66,8 +68,8 @@ export default {
     font-size: 14px;
   }
   .tree-manager{
-    width: 50px;
+    width: 70px;
     display: inline-block;
-    margin: 50px;
+    margin: 30px;
   }
 </style>

@@ -115,3 +115,21 @@ export function param2Obj(url) {
   })
   return obj
 }
+
+/**
+ * 实现列表型数据转换为树形，后端返回的数据有两个属性 id 和 pid（父节点的id
+ * 传入两个参数 一个是数组 一个是数组的根id
+ * 使用递归调用的方法！！！
+ */
+export function transListToTreeData(list, rootValue) {
+  // 返回值 还是一个数组
+  const arr = []
+  list.forEach(item => {
+    if (item.pid === rootValue) {
+      arr.push(item)
+      const children = transListToTreeData(list, item.id)
+      item.children = children
+    }
+  })
+  return arr
+}
