@@ -34,30 +34,27 @@
   </div>
 </template>
 <script>
+import { getDepartmentList } from '@/api/department'
 export default {
   name: 'Department',
   data() {
     return {
       // 定义数据
-      depts: [{
-        name: '传智教育',
-        managerName: '张三',
-        children: [{
-          name: '总裁办',
-          managerName: '李四'
-        }, {
-          name: '行政部',
-          managerName: '王五'
-        }, {
-          name: '人事部',
-          managerName: '赵六'
-        }]
-      }],
+      depts: [],
       defaultProps: {
         // 对象的两个属性
         label: 'name', // 要显示字段的名称
         children: 'children' // 读取子结点的字段名称
       }
+    }
+  },
+  created() {
+    this.getDepartmentList()
+  },
+  methods: {
+    // 定义获取数据的接口 不在created上面加async 存疑？
+    async getDepartmentList() {
+      this.depts = await getDepartmentList()
     }
   }
 }
@@ -71,6 +68,6 @@ export default {
   .tree-manager{
     width: 50px;
     display: inline-block;
-    margin: 10px;
+    margin: 50px;
   }
 </style>
