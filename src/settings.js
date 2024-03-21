@@ -15,5 +15,5 @@ module.exports = {
    * @description Whether show the logo in sidebar
    */
   // 设置侧边栏logo
-  sidebarLogo: false
+  sidebarLogo: true
 }
