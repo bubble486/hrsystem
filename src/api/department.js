@@ -6,3 +6,10 @@ export function getDepartmentList() {
     url: '/company/department'
   })
 }
+
+// 获取部门负责人的数据列表
+export function getManagerList() {
+  return request({
+    url: '/sys/user/simple'
+  })
+}
