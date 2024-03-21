@@ -1,7 +1,9 @@
 <script>
 export default {
   name: 'MenuItem',
+  // 函数式组件
   functional: true,
+  // 接收父元素传过来的icon和title消息
   props: {
     icon: {
       type: String,
@@ -12,6 +14,7 @@ export default {
       default: ''
     }
   },
+  // 渲染函数
   render(h, context) {
     const { icon, title } = context.props
     const vnodes = []
@@ -27,6 +30,7 @@ export default {
     if (title) {
       vnodes.push(<span slot='title'>{(title)}</span>)
     }
+    // 渲染节点
     return vnodes
   }
 }

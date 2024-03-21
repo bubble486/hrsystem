@@ -42,6 +42,7 @@ export const constantRoutes = [
   {
     path: '/login',
     component: () => import('@/views/login/index'),
+    // hidden 属性用来判断是否需要显示在侧边导航栏
     hidden: true
   },
 

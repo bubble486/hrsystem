@@ -12,6 +12,8 @@
         :collapse-transition="false"
         mode="vertical"
       >
+        <!-- 遍历路由信息，生成sidebar-item组件 -->
+        <!-- 是否显示所有遍历出来的sidebar-item信息，需要看sidebar-item组件 -->
         <sidebar-item v-for="route in routes" :key="route.path" :item="route" :base-path="route.path" />
       </el-menu>
     </el-scrollbar>
@@ -30,7 +32,9 @@ export default {
     ...mapGetters([
       'sidebar'
     ]),
+    // 路由信息的计算属性
     routes() {
+      // 返回所有的计算属性
       return this.$router.options.routes
     },
     activeMenu() {
