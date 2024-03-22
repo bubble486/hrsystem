@@ -38,3 +38,11 @@ export function updataDepartmentDetial(data) {
     data
   })
 }
+
+// 部门的删除接口
+export function deleteDepartment(id) {
+  return request({
+    method: 'delete',
+    url: `/company/department/${id}`
+  })
+}

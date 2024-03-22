@@ -40,7 +40,7 @@
   </div>
 </template>
 <script>
-import { getDepartmentList } from '@/api/department'
+import { getDepartmentList, deleteDepartment } from '@/api/department'
 import { transListToTreeData } from '@/utils'
 import addDept from './components/add-dept.vue'
 
@@ -76,9 +76,8 @@ export default {
         // 增加组件弹层
         this.showDialog = true
         this.currentNodeId = id
-      }
-      // 处理表单弹出层的编辑选项
-      if (type === 'edit') {
+      } else if (type === 'edit') {
+        // 处理表单弹出层的编辑选项
         // 弹出组件
         this.showDialog = true
         // 获取当前的id 用id 获取数据
@@ -90,6 +89,14 @@ export default {
         this.$nextTick(() => {
           this.$refs.addDept.getDepartmentDetail() // 等同于子组件的this
         })
+      } else {
+        // 删除部门
+        this.$confirm('您确定要删除该部门吗？').then(async() => {
+          await deleteDepartment(this.currentNodeId)
+          this.$message.success('删除成功')
+          // 重新获取department数据
+          this.getDepartmentList()
+        }).catch()
       }
     }
   }
