@@ -13,7 +13,7 @@
           <template v-slot="{row}">
             <!-- 使用作用域插槽取到当前行的数据 -->
             <!-- 条件的判断 -->
-            <el-input v-if="row.isEdit" size="mini" :placeholder="row.name" />
+            <el-input v-if="row.isEdit" v-model="row.editRow.name" size="mini" />
             <span v-else>{{ row.name }}</span>
           </template>
         </el-table-column>
@@ -21,13 +21,13 @@
           <!-- 自定义列结构 （插槽 -->
           <!-- row 是组件可以接收到的数据 -->
           <template v-slot="{row}">
-            <el-switch v-if="row.isEdit" />
+            <el-switch v-if="row.isEdit" v-model="row.editRow.state" :active-value="1" :inactive-color="0" />
             <span v-else>{{ row.state===1?"已启用": row.state===0 ? "未启用" : "无" }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="description" label="描述" align="center">
           <template v-slot="{row}">
-            <el-input v-if="row.isEdit" type="textarea" rows="2" />
+            <el-input size="mini" v-if="row.isEdit" v-model="row.editRow.description" type="textarea" rows="2" />
             <span v-else>{{ row.description }}</span>
           </template>
         </el-table-column>
@@ -35,6 +35,7 @@
           <!-- 为了后面方便拿到数据使用template标签包裹 -->
           <template v-slot="{row}">
             <template v-if="row.isEdit">
+              <!-- 编辑状态 -->
               <el-button size="mini" type="primary">确认</el-button>
               <el-button size="mini">取消</el-button>
             </template>
@@ -134,6 +135,11 @@ export default {
         // 这个地方不可以 this.isEdit = false
         // 数据不具有响应式！！！
         this.$set(item, 'isEdit', false)
+        this.$set(item, 'editRow', {
+          name: item.name,
+          state: item.state,
+          description: item.description
+        })
       })
     },
     changePage(newPage) {
@@ -155,7 +161,12 @@ export default {
       })
     },
     btnEditRow(row) {
+      // 点击编辑按钮
       row.isEdit = true
+      // 更新缓存数据
+      row.editRow.name = row.name
+      row.editRow.state = row.state
+      row.editRow.description = row.description
     }
   }
 }
