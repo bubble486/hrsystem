@@ -13,3 +13,12 @@ export function getManagerList() {
     url: '/sys/user/simple'
   })
 }
+
+// 新增部门接口
+export function addDepartment(data) {
+  return request({
+    url: '/company/department',
+    method: 'post',
+    data
+  })
+}

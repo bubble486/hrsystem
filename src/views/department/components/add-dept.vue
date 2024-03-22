@@ -1,7 +1,7 @@
 <template>
   <el-dialog title="新增部门" :visible="showDialog" @close="close">
     <!-- 弹层内容 -->
-    <el-form :ref="addDept" label-width="120px" :model="addForm" :rules="addRules">
+    <el-form ref="addDept" label-width="120px" :model="addForm" :rules="addRules">
       <el-form-item label="部门名称" prop="name">
         <el-input v-model="addForm.name" placeholder="2-10个字符" style="width:80%" size="mini" />
       </el-form-item>
@@ -21,8 +21,8 @@
       <el-form-item>
         <el-row type="flex" justify="center" align="middle">
           <el-col :span="12">
-            <el-button size="mini" type="primary">确认</el-button>
-            <el-button size="mini">取消</el-button>
+            <el-button size="mini" type="primary" @click="btnOk">确认</el-button>
+            <el-button size="mini" @click="close">取消</el-button>
           </el-col>
         </el-row>
       </el-form-item>
@@ -33,12 +33,17 @@
 <script>
 import { getDepartmentList } from '@/api/department'
 import { getManagerList } from '@/api/department'
+import { addDepartment } from '@/api/department'
 
 export default {
   props: {
     showDialog: {
       default: false,
       type: Boolean
+    },
+    currentNodeId: {
+      default: null,
+      type: Number
     }
   },
   data() {
@@ -123,11 +128,29 @@ export default {
   },
   methods: {
     close() {
+      // 重置表单
+      this.$refs.addDept.resetFields()
       // 修改父组件的值 子传父
       this.$emit('update:showDialog', false)
     },
     async getManagerList() {
       this.managerList = await getManagerList()
+    },
+    // 点击确定时候调用
+    btnOk() {
+      // 首先进行表单的整天校验
+      this.$refs.addDept.validate(async isOk => {
+        if (isOk) {
+          // 调用新增dept接口
+          await addDepartment({ ...this.addForm, pid: this.currentNodeId })
+          // 通知父组件更新 给父组件绑定一个自定义事件，触发的时候，父组件重新获取数据渲染页面
+          this.$emit('updateDepartment')
+          // 提示消息
+          this.$message.success('新增部门成功')
+          // 重置表单 关闭弹层
+          this.close()
+        }
+      })
     }
   }
 }
