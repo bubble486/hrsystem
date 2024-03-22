@@ -35,7 +35,8 @@
     </div>
     <!-- 放置弹层 -->
     <!-- sync修饰符，可以监听子组件传过来的 update:属性名的事件，直接将父组件的值进行修改 -->
-    <addDept :show-dialog.sync="showDialog" :current-node-id="currentNodeId" @updateDepartment="getDepartmentList" />
+    <!-- ref 可以获取dom的实例对象 ref也可以获取自定义组件的实例对象 -->
+    <addDept ref="addDept" :show-dialog.sync="showDialog" :current-node-id="currentNodeId" @updateDepartment="getDepartmentList" />
   </div>
 </template>
 <script>
@@ -70,10 +71,25 @@ export default {
     },
     // 操作部门的方法
     operateDept(type, id) {
+      // 处理弹出层的添加项
       if (type === 'add') {
         // 增加组件弹层
         this.showDialog = true
         this.currentNodeId = id
+      }
+      // 处理表单弹出层的编辑选项
+      if (type === 'edit') {
+        // 弹出组件
+        this.showDialog = true
+        // 获取当前的id 用id 获取数据
+        this.currentNodeId = id
+        // 更新porps --异步
+        // 直接调用子组件的方法 --同步
+        // 在子组件中获取数据
+        // 父组件调用子组件的方法获取数据 用ref
+        this.$nextTick(() => {
+          this.$refs.addDept.getDepartmentDetail() // 等同于子组件的this
+        })
       }
     }
   }

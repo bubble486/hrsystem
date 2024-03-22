@@ -22,3 +22,19 @@ export function addDepartment(data) {
     data
   })
 }
+
+// 获取部门信息接口
+export function getDepartmentDetial(id) {
+  return request({
+    url: `/company/department/${id}`
+  })
+}
+
+// 更新部门信息接口
+export function updataDepartmentDetial(data) {
+  return request({
+    method: 'put',
+    url: `/company/department/${data.id}}`,
+    data
+  })
+}
