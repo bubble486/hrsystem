@@ -41,13 +41,15 @@
       </el-row>
     </div>
     <!-- 放置弹层 -->
-    <el-dialog title="新增角色" width="500px" :visible.sync="showDialog">
+    <!-- 使用x按钮关闭表单时候不会 重置表单 监听close属性，触发btnCancel方法 -->
+    <el-dialog title="新增角色" width="500px" :visible.sync="showDialog" @close="btnCancel">
       <!-- 表单内容 -->
       <el-form ref="roleForm" :model="roleForm" :rules="roleRules" label-width="120px">
         <el-form-item prop="name" label="角色名称">
           <el-input v-model="roleForm.name" style="width:300px" size="mini" />
         </el-form-item>
-        <el-form-item label="启用">
+        <!-- 不需要校验 可以不写prop 但是需要重置表单 需要prop -->
+        <el-form-item prop="state" label="启用">
           <!-- active-value 和 inactive-value 属性可以值state中是布尔值还是number -->
           <el-switch v-model="roleForm.state" :active-value="1" :inactive-value="0" size="mini" />
         </el-form-item>
@@ -57,8 +59,8 @@
         <el-form-item>
           <el-row type="flex" justify="center">
             <el-col :span="12">
-              <el-button size="mini" type="primary">确认</el-button>
-              <el-button size="mini">取消</el-button>
+              <el-button size="mini" type="primary" @click="btnOk">确认</el-button>
+              <el-button size="mini" @click="btnCancel">取消</el-button>
             </el-col>
           </el-row>
 
@@ -68,7 +70,7 @@
   </div>
 </template>
 <script>
-import { getRoleList } from '@/api/role'
+import { getRoleList, addRole } from '@/api/role'
 
 export default {
   name: 'Role',
@@ -80,7 +82,7 @@ export default {
       // 将分页信息，放到对象中
       pageParams: {
         page: 1, // 第几页
-        pagesize: 5, // 每页多少条
+        pagesize: 3, // 每页多少条
         total: 0 // 总数
       },
       // 角色的表单对象
@@ -108,6 +110,20 @@ export default {
     changePage(newPage) {
       this.pageParams.page = newPage
       this.getRoleList()
+    },
+    btnCancel() {
+      this.$refs.roleForm.resetFields()
+      this.showDialog = false
+    },
+    btnOk() {
+      this.$refs.roleForm.validate(async isOk => {
+        if (isOk) {
+          await addRole(this.roleForm)
+          this.$message.success('新增角色成功')
+          this.getRoleList()
+          this.btnCancel()
+        }
+      })
     }
   }
 }
