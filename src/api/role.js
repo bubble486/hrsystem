@@ -17,3 +17,12 @@ export function addRole(data) {
     data
   })
 }
+
+// 修改角色信息的接口
+export function updateRole(data) {
+  return request({
+    method: 'put',
+    url: `/sys/role/${data.id}`,
+    data
+  })
+}

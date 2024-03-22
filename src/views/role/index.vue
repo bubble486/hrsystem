@@ -21,13 +21,13 @@
           <!-- 自定义列结构 （插槽 -->
           <!-- row 是组件可以接收到的数据 -->
           <template v-slot="{row}">
-            <el-switch v-if="row.isEdit" v-model="row.editRow.state" :active-value="1" :inactive-color="0" />
+            <el-switch v-if="row.isEdit" v-model="row.editRow.state" :active-value="1" :inactive-value="0" />
             <span v-else>{{ row.state===1?"已启用": row.state===0 ? "未启用" : "无" }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="description" label="描述" align="center">
           <template v-slot="{row}">
-            <el-input size="mini" v-if="row.isEdit" v-model="row.editRow.description" type="textarea" rows="2" />
+            <el-input v-if="row.isEdit" v-model="row.editRow.description" size="mini" type="textarea" rows="2" />
             <span v-else>{{ row.description }}</span>
           </template>
         </el-table-column>
@@ -36,8 +36,8 @@
           <template v-slot="{row}">
             <template v-if="row.isEdit">
               <!-- 编辑状态 -->
-              <el-button size="mini" type="primary">确认</el-button>
-              <el-button size="mini">取消</el-button>
+              <el-button size="mini" type="primary" @click="btnEditOk(row)">确认</el-button>
+              <el-button size="mini" @click="row.isEdit=false">取消</el-button>
             </template>
             <template v-else>
               <!-- 非编辑状态 -->
@@ -93,7 +93,7 @@
   </div>
 </template>
 <script>
-import { getRoleList, addRole } from '@/api/role'
+import { getRoleList, addRole, updateRole } from '@/api/role'
 
 export default {
   name: 'Role',
@@ -167,6 +167,25 @@ export default {
       row.editRow.name = row.name
       row.editRow.state = row.state
       row.editRow.description = row.description
+    },
+    async btnEditOk(row) {
+      // 编辑情况下点击确定的方法
+      if (row.editRow.name && row.editRow.description) {
+        // 调用修改角色的接口
+        await updateRole({ ...row.editRow, id: row.id })
+        // 更新成功后提示消息
+        this.$message.success('角色信息更新成功')
+        // 退出编辑状态
+        // 这里不调用获取接口是为了可以同时操作多个 table中的内容
+        // this.getRoleList()
+        // this.isEdit = false
+        Object.assign(row, {
+          ...row.editRow,
+          isEdit: false
+        })
+      } else {
+        this.$message.warning('角色和描述不能为空')
+      }
     }
   }
 }
