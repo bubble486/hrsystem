@@ -6,24 +6,46 @@
         <el-button size="mini" type="primary" @click="showDialog=true">添加角色</el-button>
       </div>
       <!-- 放置table组件 -->
+      <!-- table 数据的渲染是list中的数据 -->
       <el-table :data="list">
         <!-- 放置列 -->
-        <el-table-column prop="name" label="角色" width="200px" align="center" />
+        <el-table-column prop="name" label="角色" width="200px" align="center">
+          <template v-slot="{row}">
+            <!-- 使用作用域插槽取到当前行的数据 -->
+            <!-- 条件的判断 -->
+            <el-input v-if="row.isEdit" size="mini" :placeholder="row.name" />
+            <span v-else>{{ row.name }}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="state" label="启用" width="200px" align="center">
           <!-- 自定义列结构 （插槽 -->
           <!-- row 是组件可以接收到的数据 -->
           <template v-slot="{row}">
-            <span>{{ row.state===1?"已启用": row.state===0 ? "未启用" : "无" }}</span>
+            <el-switch v-if="row.isEdit" />
+            <span v-else>{{ row.state===1?"已启用": row.state===0 ? "未启用" : "无" }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="description" label="描述" align="center" />
+        <el-table-column prop="description" label="描述" align="center">
+          <template v-slot="{row}">
+            <el-input v-if="row.isEdit" type="textarea" rows="2" />
+            <span v-else>{{ row.description }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" align="center">
           <!-- 为了后面方便拿到数据使用template标签包裹 -->
-          <template>
-            <!-- 放置操作按钮 -->
-            <el-button size="mini" type="text">分配权限</el-button>
-            <el-button size="mini" type="text">编辑</el-button>
-            <el-button size="mini" type="text">删除</el-button>
+          <template v-slot="{row}">
+            <template v-if="row.isEdit">
+              <el-button size="mini" type="primary">确认</el-button>
+              <el-button size="mini">取消</el-button>
+            </template>
+            <template v-else>
+              <!-- 非编辑状态 -->
+              <!-- 放置操作按钮 -->
+              <el-button size="mini" type="text">分配权限</el-button>
+              <el-button size="mini" type="text" @click="btnEditRow(row)">编辑</el-button>
+              <el-button size="mini" type="text">删除</el-button>
+            </template>
+
           </template>
         </el-table-column>
       </el-table>
@@ -106,6 +128,13 @@ export default {
       const { rows, total } = await getRoleList(this.pageParams)
       this.list = rows // 赋值数据
       this.pageParams.total = total
+      // 在获取数据之后对每一行 添加 一个编辑标记
+      this.list.forEach(item => {
+        // 添加一个属性 初始值为false
+        // 这个地方不可以 this.isEdit = false
+        // 数据不具有响应式！！！
+        this.$set(item, 'isEdit', false)
+      })
     },
     changePage(newPage) {
       this.pageParams.page = newPage
@@ -124,6 +153,9 @@ export default {
           this.btnCancel()
         }
       })
+    },
+    btnEditRow(row) {
+      row.isEdit = true
     }
   }
 }
