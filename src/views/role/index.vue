@@ -44,7 +44,11 @@
               <!-- 放置操作按钮 -->
               <el-button size="mini" type="text">分配权限</el-button>
               <el-button size="mini" type="text" @click="btnEditRow(row)">编辑</el-button>
-              <el-button size="mini" type="text">删除</el-button>
+              <!-- 使用气泡确认框包裹按钮 -->
+              <el-popconfirm title="您确定要删除该管理员？" @onConfirm="confirmDelete(row.id)">
+                <!-- 具名插槽 -->
+                <el-button slot="reference" style="margin-left:10px" size="mini" type="text">删除</el-button>
+              </el-popconfirm>
             </template>
 
           </template>
@@ -93,7 +97,7 @@
   </div>
 </template>
 <script>
-import { getRoleList, addRole, updateRole } from '@/api/role'
+import { getRoleList, addRole, updateRole, deleteRole } from '@/api/role'
 
 export default {
   name: 'Role',
@@ -186,6 +190,16 @@ export default {
       } else {
         this.$message.warning('角色和描述不能为空')
       }
+    },
+    async confirmDelete(id) {
+      await deleteRole(id)
+      this.$message.success('删除角色成功')
+      // 如果删除的是页数中的最后一个，需要请求前一页的数据
+      if (this.list.length === 1) {
+        this.pageParams.page--
+      }
+      this.getRoleList()
+      // 如果还是拿出的不是最后一个，更新当前页面的数据
     }
   }
 }

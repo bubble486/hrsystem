@@ -26,3 +26,11 @@ export function updateRole(data) {
     data
   })
 }
+
+// 删除角色信息接口
+export function deleteRole(id) {
+  return request({
+    method: 'delete',
+    url: `/sys/role/${id}`
+  })
+}
