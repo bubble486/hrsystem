@@ -31,7 +31,13 @@
       <!-- el-row 是布局组件，可以设置相应的布局 -->
       <el-row type="flex" style="height:60px" align="middle" justify="end">
         <!-- 放置分页组件 -->
-        <el-pagination layout="prev,pager,next" />
+        <el-pagination
+          :page-size="pageParams.pagesize"
+          :current-page="pageParams.page"
+          :total="pageParams.total"
+          layout="prev,pager,next"
+          @current-change="changePage"
+        />
       </el-row>
     </div>
   </div>
@@ -43,7 +49,13 @@ export default {
   name: 'Role',
   data() {
     return {
-      list: []
+      list: [],
+      // 将分页信息，放到对象中
+      pageParams: {
+        page: 1, // 第几页
+        pagesize: 5, // 每页多少条
+        total: 0 // 总数
+      }
     }
   },
   created() {
@@ -52,8 +64,13 @@ export default {
   methods: {
     async getRoleList() {
       // 后端默认是 1 页 10条
-      const { rows } = await getRoleList()
+      const { rows, total } = await getRoleList(this.pageParams)
       this.list = rows // 赋值数据
+      this.pageParams.total = total
+    },
+    changePage(newPage) {
+      this.pageParams.page = newPage
+      this.getRoleList()
     }
   }
 }
