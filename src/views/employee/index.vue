@@ -22,14 +22,14 @@
           <el-button size="mini">excel导出</el-button>
         </el-row>
         <!-- 表格组件 -->
-        <el-table>
-          <el-table-column align="center" label="头像" />
-          <el-table-column label="姓名" />
-          <el-table-column label="手机号" sortable />
-          <el-table-column label="工号" sortable />
-          <el-table-column label="聘用形式" />
-          <el-table-column label="部门" />
-          <el-table-column label="入职时间" sortable />
+        <el-table :data="list">
+          <el-table-column prop="staffphoto" align="center" label="头像" />
+          <el-table-column prop="username" label="姓名" />
+          <el-table-column prop="mobile" label="手机号" sortable />
+          <el-table-column prop="workNumber" label="工号" sortable />
+          <el-table-column prop="formOfEmployment" label="聘用形式" />
+          <el-table-column prop="departmentName" label="部门" />
+          <el-table-column prop="timeOfEntry" label="入职时间" sortable />
           <el-table-column label="操作" width="280px">
             <template>
               <el-button size="mini" type="text">查看</el-button>
@@ -51,12 +51,14 @@
 </template>
 
 <script>
+import { getEmployeeList } from '@/api/employee'
 import { getDepartmentList } from '@/api/department'
 import { transListToTreeData } from '@/utils'
 export default {
   name: 'Employee',
   data() {
     return {
+      // 存放树形列表的数据
       depts: [],
       defaultProps: {
         label: 'name',
@@ -64,8 +66,12 @@ export default {
       },
       // 存储查询参数
       queryParams: {
+        page: 1,
+        pagesize: 5,
         departmentId: null
-      }
+      },
+      // 存放员工列表的数据
+      list: []
     }
   },
   created() {
@@ -82,10 +88,19 @@ export default {
         // setCurrentKey方法需要绑定node-key作为唯一标识
         this.$refs.deptTree.setCurrentKey(this.queryParams.departmentId)
       })
+      // 这个时候参数记录了id
+      this.getEmployeeList()
     },
     // 监听节点的切换状态 两个参数 当前节点数据 当前节点node
     selectNode(nodeData) {
+      // 重新记录了节点id
       this.queryParams.departmentId = nodeData.id
+      // 实现了切换节点的时候查询不同的员工列表
+      this.getEmployeeList()
+    },
+    async getEmployeeList() {
+      const { rows } = await getEmployeeList(this.queryParams)
+      this.list = rows
     }
   }
 }
