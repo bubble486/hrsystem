@@ -13,6 +13,8 @@
 </template>
 
 <script>
+// 图片是打算存在一个腾讯云服务器的 具体没有写
+// 一般图片视频啥的都是放在第三方服务器上面，减轻后端服务器的压力
 export default {
   props: {
     value: {
