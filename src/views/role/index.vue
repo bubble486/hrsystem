@@ -99,16 +99,18 @@
     <el-dialog :visible.sync="showPermissionDialog" title="分配权限">
       <!-- 放置权限数据 -->
       <el-tree
+        node-key="id"
         :data="permissionData"
         :props="{ label:'name', children: 'children'}"
         show-checkbox
         default-expand-all
+        :default-checked-keys="permIds"
       />
     </el-dialog>
   </div>
 </template>
 <script>
-import { getRoleList, addRole, updateRole, deleteRole } from '@/api/role'
+import { getRoleList, addRole, updateRole, deleteRole, getRoleDetail } from '@/api/role'
 import { getPermissionList } from '@/api/permission'
 import { transListToTreeData } from '@/utils'
 
@@ -138,7 +140,9 @@ export default {
       showPermissionDialog: false,
       permissionData: [],
       // 记录当前选中的id
-      currentId: null
+      currentId: null,
+      // 标记哪些个权限被勾选
+      permIds: []
     }
   },
   created() {
@@ -219,9 +223,11 @@ export default {
       // 如果还是拿出的不是最后一个，更新当前页面的数据
     },
     async btnPermission(id) {
-      this.showPermissionDialog = true
       this.permissionData = transListToTreeData(await getPermissionList(), 0)
       this.currentId = id
+      const { permIds } = await getRoleDetail(id)
+      this.permIds = permIds
+      this.showPermissionDialog = true
     }
   }
 }
