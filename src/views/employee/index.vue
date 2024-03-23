@@ -2,7 +2,15 @@
   <div class="container">
     <div class="app-container">
       <div class="left">
-        <el-input style="margin-bottom:10px" type="text" prefix-icon="el-icon-search" size="small" placeholder="输入员工姓名全员搜索" />
+        <el-input
+          v-model="queryParams.keyword"
+          style="margin-bottom:10px"
+          type="text"
+          prefix-icon="el-icon-search"
+          size="small"
+          placeholder="输入员工姓名全员搜索"
+          @input="changeValue"
+        />
         <!-- 树形组件 -->
         <el-tree
           ref="deptTree"
@@ -19,7 +27,7 @@
         <el-row class="opeate-tools" type="flex" justify="end">
           <el-button size="mini" type="primary">添加员工</el-button>
           <el-button size="mini">excel导入</el-button>
-          <el-button size="mini">excel导出</el-button>
+          <el-button size="mini" @click="exportEmployee">excel导出</el-button>
         </el-row>
         <!-- 表格组件 -->
         <el-table :data="list">
@@ -82,7 +90,8 @@ export default {
       queryParams: {
         page: 1,
         pagesize: 5,
-        departmentId: null
+        departmentId: null,
+        keyword: ''
       },
       // 存放员工列表的数据
       list: [],
@@ -125,6 +134,19 @@ export default {
     changePage(newPage) {
       this.queryParams.page = newPage
       this.getEmployeeList()
+    },
+    // input框内容改变时触发
+    changeValue() {
+    // 进行防抖处理，单位时间内只执行最后一次
+      clearTimeout(this.timer) // 清理上一次的定时器
+      this.timer = setTimeout(() => {
+        this.queryParams.page = 1
+        this.getEmployeeList()
+      }, 400)
+    },
+    // 导出员工excel方法
+    exportEmployee(){
+      
     }
   }
 }
