@@ -37,6 +37,8 @@
             <el-col :span="12">
               <el-form-item label="部门" prop="departmentId">
                 <!-- 放置及联部门组件 会单独封装 -->
+                <!-- inputW 样式会给到 template第一层的组件 -->
+                <select-tree class="inputW" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -96,10 +98,16 @@
   </div>
 </template>
 <script>
+import selectTree from './components/select-tree.vue'
+import SelectTree from './components/select-tree.vue'
 
 export default {
+  components: { selectTree },
   data() {
     return {
+      components: {
+        SelectTree
+      },
       userInfo: {
         username: '', // 用户名
         mobile: '', // 手机号

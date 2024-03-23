@@ -128,7 +128,8 @@ export function transListToTreeData(list, rootValue) {
     if (item.pid === rootValue) {
       arr.push(item)
       const children = transListToTreeData(list, item.id)
-      item.children = children
+      // 需要判断一下，如果children长度为0 不需要赋值了
+      if (children.length > 0) item.children = children
     }
   })
   return arr
