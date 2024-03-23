@@ -53,7 +53,7 @@
             <template v-slot="{ row }">
               <!-- 在路由跳转的时候采用路由参数进行数据的传递 -->
               <el-button size="mini" type="text" @click="$router.push(`/employee/detail/${row.id}`)">查看</el-button>
-              <el-button size="mini" type="text">角色</el-button>
+              <el-button size="mini" type="text" @click="btnRole">角色</el-button>
               <el-popconfirm title="您确定要删除该行数据吗？" @onConfirm="confirmDelete(row.id)">
                 <!-- 具名插槽 -->
                 <el-button slot="reference" style="margin-left:10px" size="mini" type="text">删除</el-button>
@@ -76,11 +76,20 @@
     <!-- 放置导入的组件 -->
     <!-- 监听uploadSuccess 事件 成功之后调用函数 -->
     <import-excel :show-excel-dialog.sync="showExcelDialog" @uploadSuccess="getDepartmentList" />
+    <!-- 点击角色弹出层 -->
+    <el-dialog :visible.sync="showRolelDialog" title="分配角色">
+      <!-- 弹层内容 -->
+      <!-- el-checkbox-group -->
+      <el-checkbox-group v-model="roleIds">
+        <!-- 循环n个 el-checkbox 要存储的值是label属性绑定的值 -->
+        <el-checkbox v-for="item in roleList" :key="item.id" :label="item.id">{{ item.name }}</el-checkbox>
+      </el-checkbox-group>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getEmployeeList, exportEmployee, delEmployee } from '@/api/employee'
+import { getEmployeeList, exportEmployee, delEmployee, getEnableRoleList } from '@/api/employee'
 import { getDepartmentList } from '@/api/department'
 import { transListToTreeData } from '@/utils'
 import FileSaver from 'file-saver'
@@ -109,7 +118,13 @@ export default {
       // 记录员工的总数
       total: 0,
       // 控制excel弹层的显示和隐藏
-      showExcelDialog: false
+      showExcelDialog: false,
+      // 控制显示角色弹层的变量
+      showRolelDialog: false,
+      // 接收角色列表
+      roleList: [],
+      // 用于 checkbox-group的双向绑定 存储选中的列表
+      roleIds: []
     }
   },
   created() {
@@ -175,6 +190,10 @@ export default {
       // 如果是一页的最后一个
       if (this.list.length === 1 && this.queryParams.page > 1) this.queryParams.page--
       this.getDepartmentList()
+    },
+    async btnRole() {
+      this.showRolelDialog = true
+      this.roleList = await getEnableRoleList()
     }
   }
 }
