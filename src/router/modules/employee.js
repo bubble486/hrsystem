@@ -14,6 +14,7 @@ export default {
     // 员工详情页
     path: '/employee/detail',
     component: () => import('@/views/employee/detail.vue'),
+    name: 'detail',
     hidden: true,
     meta: {
       // 显示在导航栏
