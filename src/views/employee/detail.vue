@@ -98,6 +98,7 @@
   </div>
 </template>
 <script>
+import { addEmployee } from '@/api/employee'
 import selectTree from './components/select-tree.vue'
 import SelectTree from './components/select-tree.vue'
 
@@ -147,7 +148,17 @@ export default {
   },
   methods: {
     saveData() {
-      this.$refs.userForm.validate()
+      // 保存按钮
+      this.$refs.userForm.validate(async isOk => {
+        if (isOk) {
+          // 校验通过 调用新增接口
+          await addEmployee(this.userInfo)
+          // 成功
+          this.$message.success('新增员工信息成功')
+          // 跳转回到列表页
+          this.$router.push('/employee')
+        }
+      })
     }
   }
 }
