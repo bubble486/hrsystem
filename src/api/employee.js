@@ -16,3 +16,11 @@ export function exportEmployee() {
     responseType: 'blob'
   })
 }
+
+// 下载导出模板的接口
+export function getExportTemplate() {
+  return request({
+    url: '/sys/user/import/template',
+    responseType: 'blob'
+  })
+}
