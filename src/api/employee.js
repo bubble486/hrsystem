@@ -24,3 +24,13 @@ export function getExportTemplate() {
     responseType: 'blob'
   })
 }
+
+// 上传excel接口
+export function uploadExcel(data) {
+  // data 的类型应为formData
+  return request({
+    method: 'post',
+    url: '/sys/user/import',
+    data
+  })
+}

@@ -12,12 +12,13 @@
           class="excel-upload-input"
           type="file"
           accept=".xlsx, .xls"
+          @change="uploadChange"
         >
         <div class="drop">
           <i class="el-icon-upload" />
           <el-button type="text" @click="getExportTemplate">下载导入模板</el-button>
           <span>将文件拖到此处或
-            <el-button type="text">点击上传</el-button>
+            <el-button type="text" @click="handleUpload">点击上传</el-button>
           </span>
         </div>
       </div>
@@ -29,7 +30,7 @@
   </el-dialog>
 </template>
 <script>
-import { getExportTemplate } from '@/api/employee'
+import { getExportTemplate, uploadExcel } from '@/api/employee'
 import FileSaver from 'file-saver'
 
 export default {
@@ -43,7 +44,38 @@ export default {
     async getExportTemplate() {
       const result = await getExportTemplate()
       console.log(result)
-      FileSaver.saveAs(result, '员工列表末班.xlsx')
+      FileSaver.saveAs(result, '员工列表模板.xlsx')
+    },
+    // 弹出文件选择器 只有一种方式 通过input 类型为file
+    handleUpload() {
+      // 与this.$refs.属性名是等价的
+      this.$refs['excel-upload-input'].click()
+    },
+    // 监听input file 的change方法
+    async uploadChange(event) {
+      // h5 原生的回调函数会返回一个event参数 event.target.files 可以拿到文件数组
+      const files = event.target.files
+      if (files.length > 0) {
+        // 判断文件数组中的值大于0 有文件
+        const data = new FormData()
+        // file ：file类型 ；使用append方法添加数据
+        data.append('file', files[0])
+        await uploadExcel(data)
+        try {
+          // 成功
+        // 关闭弹层
+          this.$emit('update:showExcelDialog', false)
+          // 触发 上传成功的事件 --通知父组件 上传成功
+          this.$emit('uploadSuccess')
+          // this.$refs['excel-upload-input'].value = ''
+        } catch (error) {
+          // 捕获失败，并将文件列表清空
+          // this.$refs['excel-upload-input'].value = ''
+        } finally {
+          // 不论成功或者失败都会执行finally
+          this.$refs['excel-upload-input'].value = ''
+        }
+      }
     }
   }
 }

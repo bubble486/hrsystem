@@ -70,7 +70,8 @@
       </div>
     </div>
     <!-- 放置导入的组件 -->
-    <import-excel :show-excel-dialog.sync="showExcelDialog" />
+    <!-- 监听uploadSuccess 事件 成功之后调用函数 -->
+    <import-excel :show-excel-dialog.sync="showExcelDialog" @uploadSuccess="getDepartmentList" />
   </div>
 </template>
 
