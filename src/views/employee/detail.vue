@@ -85,7 +85,7 @@
             <el-col :span="12">
               <el-form-item label="员工头像">
                 <!-- 放置上传图片 -->
-                <image-upload v-model="userInfo.staffPhoto"/>
+                <image-upload v-model="userInfo.staffPhoto" />
               </el-form-item>
             </el-col>
           </el-row>
