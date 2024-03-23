@@ -74,3 +74,12 @@ export function getEnableRoleList() {
     url: '/sys/role/list/enabled'
   })
 }
+
+// 给员工分配角色接口
+export function assginRoles(data) {
+  return request({
+    method: 'put',
+    url: '/sys/user/assignRoles',
+    data
+  })
+}

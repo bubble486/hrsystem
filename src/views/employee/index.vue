@@ -53,7 +53,8 @@
             <template v-slot="{ row }">
               <!-- 在路由跳转的时候采用路由参数进行数据的传递 -->
               <el-button size="mini" type="text" @click="$router.push(`/employee/detail/${row.id}`)">查看</el-button>
-              <el-button size="mini" type="text" @click="btnRole">角色</el-button>
+              <!-- 点击角色的时候获取用户的id -->
+              <el-button size="mini" type="text" @click="btnRole(row.id)">角色</el-button>
               <el-popconfirm title="您确定要删除该行数据吗？" @onConfirm="confirmDelete(row.id)">
                 <!-- 具名插槽 -->
                 <el-button slot="reference" style="margin-left:10px" size="mini" type="text">删除</el-button>
@@ -84,12 +85,18 @@
         <!-- 循环n个 el-checkbox 要存储的值是label属性绑定的值 -->
         <el-checkbox v-for="item in roleList" :key="item.id" :label="item.id">{{ item.name }}</el-checkbox>
       </el-checkbox-group>
+      <el-row slot="footer" type="flex" justify="center">
+        <el-col :span="6">
+          <el-button size="mini" type="primary" @click="btnRoleOk">确认</el-button>
+          <el-button size="mini" @click="showRolelDialog = false">取消</el-button>
+        </el-col>
+      </el-row>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getEmployeeList, exportEmployee, delEmployee, getEnableRoleList } from '@/api/employee'
+import { getEmployeeList, exportEmployee, delEmployee, getEnableRoleList, getEmployeeDetail, assginRoles } from '@/api/employee'
 import { getDepartmentList } from '@/api/department'
 import { transListToTreeData } from '@/utils'
 import FileSaver from 'file-saver'
@@ -124,7 +131,9 @@ export default {
       // 接收角色列表
       roleList: [],
       // 用于 checkbox-group的双向绑定 存储选中的列表
-      roleIds: []
+      roleIds: [],
+      // 记录当前点击的用户id
+      currentUserId: null
     }
   },
   created() {
@@ -191,9 +200,19 @@ export default {
       if (this.list.length === 1 && this.queryParams.page > 1) this.queryParams.page--
       this.getDepartmentList()
     },
-    async btnRole() {
-      this.showRolelDialog = true
+    async btnRole(id) {
       this.roleList = await getEnableRoleList()
+      // 记录当前点击的id 后面要 确定和取消时后存取给用户
+      this.currentUserId = id
+      const { roleIds } = await getEmployeeDetail(id)
+      this.roleIds = roleIds
+      this.showRolelDialog = true
+    },
+    async btnRoleOk() {
+      await assginRoles({ id: this.currentUserId, roleIds: this.roleIds })
+      // 成功 提示消息关闭弹层
+      this.$message.success('修改用户权限成功')
+      this.showRolelDialog = false
     }
   }
 }
