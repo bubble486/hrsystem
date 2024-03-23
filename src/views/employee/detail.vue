@@ -25,8 +25,11 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="手机" prop="mobile">
+                <!-- 编辑模式下手机号不应该修改 -->
+                <!-- 取反再取反 就是布尔值 -->
                 <el-input
                   v-model="userInfo.mobile"
+                  :disabled="!!this.$route.params.id"
                   size="mini"
                   class="inputW"
                 />
@@ -98,7 +101,7 @@
   </div>
 </template>
 <script>
-import { addEmployee, getEmployeeDetail } from '@/api/employee'
+import { addEmployee, getEmployeeDetail, updateEmployeeDetail } from '@/api/employee'
 import selectTree from './components/select-tree.vue'
 import SelectTree from './components/select-tree.vue'
 
@@ -156,16 +159,26 @@ export default {
       // 保存按钮
       this.$refs.userForm.validate(async isOk => {
         if (isOk) {
-          // 校验通过 调用新增接口
-          await addEmployee(this.userInfo)
-          // 成功
-          this.$message.success('新增员工信息成功')
+          // 判断是否为编辑模式
+          if (this.$route.params.id) {
+            // 调用修改的接口
+            await updateEmployeeDetail(this.userInfo)
+            // 成功 提示信息
+            this.$message.success('修改员工信息成功')
+          } else {
+            // 校验通过 调用新增接口
+            await addEmployee(this.userInfo)
+            // 成功
+            this.$message.success('新增员工信息成功')
+          }
+
           // 跳转回到列表页
           this.$router.push('/employee')
         }
       })
     },
     async getEmployeeDetail() {
+      // 这个接口调用的直接赋值给data中的数据还有响应式，数组使用索引修改，以及对象直接xxx.yyy 追加属性失去响应式
       this.userInfo = await getEmployeeDetail(this.$route.params.id)
     }
   }

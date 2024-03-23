@@ -58,3 +58,12 @@ export function getEmployeeDetail(id) {
     url: `/sys/user/${id}`
   })
 }
+
+// 修改员工接口
+export function updateEmployeeDetail(data) {
+  return request({
+    url: `/sys/user/${data.id}`,
+    method: 'put',
+    data
+  })
+}
