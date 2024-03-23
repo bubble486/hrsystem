@@ -98,7 +98,7 @@
   </div>
 </template>
 <script>
-import { addEmployee } from '@/api/employee'
+import { addEmployee, getEmployeeDetail } from '@/api/employee'
 import selectTree from './components/select-tree.vue'
 import SelectTree from './components/select-tree.vue'
 
@@ -146,6 +146,11 @@ export default {
 
     }
   },
+  // 挂载完成后根据id获取数据
+  created() {
+    // 调用获取员工详情的api
+    this.$route.params.id && this.getEmployeeDetail()
+  },
   methods: {
     saveData() {
       // 保存按钮
@@ -159,6 +164,9 @@ export default {
           this.$router.push('/employee')
         }
       })
+    },
+    async getEmployeeDetail() {
+      this.userInfo = await getEmployeeDetail(this.$route.params.id)
     }
   }
 }

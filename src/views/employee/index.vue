@@ -51,7 +51,8 @@
           <el-table-column prop="timeOfEntry" label="入职时间" sortable />
           <el-table-column label="操作" width="280px">
             <template v-slot="{ row }">
-              <el-button size="mini" type="text">查看</el-button>
+              <!-- 在路由跳转的时候采用路由参数进行数据的传递 -->
+              <el-button size="mini" type="text" @click="$router.push(`/employee/detail/${row.id}`)">查看</el-button>
               <el-button size="mini" type="text">角色</el-button>
               <el-popconfirm title="您确定要删除该行数据吗？" @onConfirm="confirmDelete(row.id)">
                 <!-- 具名插槽 -->

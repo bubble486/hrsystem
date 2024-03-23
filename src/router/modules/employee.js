@@ -12,7 +12,8 @@ export default {
     }
   }, {
     // 员工详情页
-    path: '/employee/detail',
+    // 路由参数配置 ?代表参数可有可无
+    path: '/employee/detail/:id?',
     component: () => import('@/views/employee/detail.vue'),
     name: 'detail',
     hidden: true,
