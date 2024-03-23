@@ -73,9 +73,11 @@
 </template>
 
 <script>
-import { getEmployeeList } from '@/api/employee'
+import { getEmployeeList, exportEmployee } from '@/api/employee'
 import { getDepartmentList } from '@/api/department'
 import { transListToTreeData } from '@/utils'
+import FileSaver from 'file-saver'
+
 export default {
   name: 'Employee',
   data() {
@@ -145,8 +147,13 @@ export default {
       }, 400)
     },
     // 导出员工excel方法
-    exportEmployee(){
-      
+    async exportEmployee() {
+      const result = await exportEmployee()
+      // 之前响应拦截器默认处理json格式的数据，现在需要处理blob格式
+      // 使用npm包 将文件保存
+      console.log(result)
+      // FileSaver.saveAs(blob对象，文件名称)
+      FileSaver.saveAs(result, '员工列表.xlsx')
     }
   }
 }

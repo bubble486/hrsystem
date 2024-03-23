@@ -9,7 +9,7 @@ const service = axios.create({
   // 执行dev时候使用/api 执行build时候使用/prod-api
   // baseURL: '/api',
   baseURL: process.env.VUE_APP_BASE_API,
-  timeout: 10000
+  timeout: 120000
 })
 
 // 创建请求拦截器
@@ -28,6 +28,9 @@ service.interceptors.request.use((config) => {
 
 // 响应拦截器
 service.interceptors.response.use((response) => {
+  // 判断是否是blob格式的二进制文件流，如果是就直接返回
+  if (response.data instanceof Blob) return response.data
+  // 处理json格式的响应拦截器
   const { data, message, success } = response.data
   if (success) {
     return data
