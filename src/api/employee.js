@@ -34,3 +34,11 @@ export function uploadExcel(data) {
     data
   })
 }
+
+// 删除员工信息接口
+export function delEmployee(id) {
+  return request({
+    method: 'delete',
+    url: `/sys/user/${id}`
+  })
+}
