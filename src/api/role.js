@@ -41,3 +41,12 @@ export function getRoleDetail(id) {
     url: `/sys/role/${id}`
   })
 }
+
+// 给角色分配权限
+export function assginPerm(data) {
+  return request({
+    method: 'put',
+    url: '/sys/role/assignPrem',
+    data
+  })
+}
