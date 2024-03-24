@@ -5,6 +5,8 @@ import nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
 // 引入store
 import store from '@/store'
+// 引入动态路由
+import { asyncRouters } from '@/router'
 /**
  * 前置路由守卫
  * 三个参数 to：去哪个页面 from：从哪跳转 next
@@ -26,9 +28,21 @@ router.beforeEach(async(to, from, next) => {
       // 有token 判断是否获取过资料
       if (!store.getters.userId) {
         // 这个地方用await是为了后面的内容是请求成功之后才执行
-        await store.dispatch('user/getUserInfo')
+        const { roles } = await store.dispatch('user/getUserInfo')
+        // console.log(roles.menus)
+        // console.log(asyncRouters)
+        // 得到筛选后的路由
+        const filterRouters = asyncRouters.filter(item => {
+          return roles.menus.includes(item.name)
+        })
+        // 添加动态路由信息到router
+        // 404的配置路由信息必须放在所有路由信息的最后
+        router.addRoutes([...filterRouters, { path: '*', redirect: '/404', hidden: true }])
+        // router添加路由之后需要转发一下 router的已知缺陷
+        next(to.path)
+      } else {
+        next()
       }
-      next()
     }
   } else {
     // 没有token判断是否在白名单中

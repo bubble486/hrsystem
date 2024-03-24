@@ -35,6 +35,7 @@ const actions = {
     const userInfo = await getUserInfo()
     // 调用api中 封装的请求用户数据接口
     context.commit('SET_USER_INFO', userInfo)
+    return userInfo
   },
   logout(context) {
     // 删除token信息
