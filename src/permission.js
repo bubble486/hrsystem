@@ -35,6 +35,8 @@ router.beforeEach(async(to, from, next) => {
         const filterRouters = asyncRouters.filter(item => {
           return roles.menus.includes(item.name)
         })
+        // 筛选动态路由信息后，将数据传到vuex中
+        store.commit('user/SET_ROUTES', filterRouters)
         // 添加动态路由信息到router
         // 404的配置路由信息必须放在所有路由信息的最后
         router.addRoutes([...filterRouters, { path: '*', redirect: '/404', hidden: true }])

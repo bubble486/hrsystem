@@ -1,9 +1,13 @@
 import { setToken, getToken, removeToken } from '@/utils/auth'
 import { login, getUserInfo } from '@/api/user'
+import { constantRoutes } from '@/router'
 
 const state = {
   token: getToken(),
-  userInfo: {}
+  userInfo: {},
+  // 用来存放路由数据，因为动态添加的路由数据不具有响应式。
+  // 所以放到vuex中进行统一的响应式管理
+  routes: constantRoutes
 }
 
 const mutations = {
@@ -20,6 +24,10 @@ const mutations = {
   },
   SET_USER_INFO(state, userInfo) {
     state.userInfo = userInfo
+  },
+  SET_ROUTES(state, newRoutes) {
+    // 静态路由+动态路由
+    state.routes = [...constantRoutes, ...newRoutes]
   }
 }
 

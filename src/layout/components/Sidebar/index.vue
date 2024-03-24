@@ -30,13 +30,14 @@ export default {
   components: { SidebarItem, Logo },
   computed: {
     ...mapGetters([
-      'sidebar'
+      'sidebar',
+      'routes'
     ]),
     // 路由信息的计算属性
-    routes() {
-      // 返回所有的计算属性
-      return this.$router.options.routes
-    },
+    // routes() {
+    //   // 返回所有的计算属性
+    //   return this.$router.options.routes
+    // },
     activeMenu() {
       const route = this.$route
       const { meta, path } = route
