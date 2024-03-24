@@ -6,3 +6,10 @@ export function getHomeData() {
     url: '/home/data'
   })
 }
+
+// 获取通知数据接口
+export function getHomeNotice() {
+  return request({
+    url: '/home/notice'
+  })
+}
