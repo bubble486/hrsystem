@@ -36,6 +36,19 @@ Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 
+// 使用自定义指令封装，控制功能权限 注册指令时候不需要加v-
+Vue.directive('permission', {
+  inserted(el, binding) {
+    const points = store.state.user.userInfo?.roles?.points || []
+    if (!points.includes(binding.value)) {
+      // 删除
+      el.remove()
+      // 禁用
+      // el.disabled = true
+    }
+  }
+})
+
 new Vue({
   el: '#app',
   router,
